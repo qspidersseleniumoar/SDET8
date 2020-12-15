@@ -11,41 +11,57 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
+import com.comcast.commonutils.ExcelUtility;
+import com.comcast.commonutils.FileUtility;
 import com.comcast.commonutils.JavaUtils;
 import com.comcast.commonutils.WebDriverUTils;
 
 public class CreateConatctWithORg {
 	
 	@Test
-	public void createConatctWithORg() {
+	public void createConatctWithORg() throws Throwable {
 		WebDriverUTils wLib = new WebDriverUTils();
+		FileUtility fLib = new FileUtility();
+		ExcelUtility elib = new ExcelUtility();
 		
 		/*Common  Data*/
-		String URL  = "http://localhost:8888";
-		String USERNAME  = "admin";
-		String PASSWORD  = "admin";
+		String URL  = fLib.getPropertyKeyValue("url");
+		String USERNAME  = fLib.getPropertyKeyValue("username");
+		String PASSWORD  = fLib.getPropertyKeyValue("password");
+		String BROWSER  = fLib.getPropertyKeyValue("browser");
 		
 		/*Test  Data*/
-		String orgNAme = "Skillrary_ "+JavaUtils.getRanDomData() ;
-		String orgIndustry = "Education";
-		String orgType = "Other";
-		String orgRating = "Active";
-		String contactLastNAme  = "Mithun_"+JavaUtils.getRanDomData();
+		String orgNAme = elib.getExcelData("Contact", "tc_01", "OrgName")+JavaUtils.getRanDomData() ;
+		String orgIndustry = elib.getExcelData("Contact", "tc_01", "Industry");
+		String orgType = elib.getExcelData("Contact", "tc_01", "Type");
+		String orgRating = elib.getExcelData("Contact", "tc_01", "Rating");
+		String contactLastNAme  = elib.getExcelData("Contact", "tc_01", "LastName")+JavaUtils.getRanDomData();
 		
 
 		/*step 1 : login to app*/
-		WebDriver driver = new ChromeDriver();
-		driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
-		driver.get("http://localhost:8888");
+		WebDriver driver ;
+		 if(BROWSER.equals("chrome")) {
+		    driver = new ChromeDriver();
+		 }else if(BROWSER.equals("firefox")) {
+			 driver = new FirefoxDriver();
+		 }else if(BROWSER.equals("ie")) {
+			 driver = new InternetExplorerDriver();
+		 }else {
+			 driver = new ChromeDriver(); 
+		 }
 		
-		driver.findElement(By.name("user_name")).sendKeys("admin");
-		driver.findElement(By.name("user_password")).sendKeys("admin");
+		driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+		driver.get(URL);
+		
+		driver.findElement(By.name("user_name")).sendKeys(USERNAME);
+		driver.findElement(By.name("user_password")).sendKeys(PASSWORD);
 		driver.findElement(By.id("submitButton")).click();
 		
 		
@@ -86,7 +102,7 @@ public class CreateConatctWithORg {
 			driver.findElement(By.xpath("//input[@title='Save [Alt+S]']")).click();
 		
 		 /*step 8 : logout*/ 
-			WebElement wb = driver.findElement(By.linkText("//img[@src='themes/softed/images/user.PNG']"));
+			WebElement wb = driver.findElement(By.xpath("//img[@src='themes/softed/images/user.PNG']"));
 			wLib.moveMouseToElemnet(driver, wb);
 			driver.findElement(By.linkText("Sign Out")).click();
 			driver.quit();
