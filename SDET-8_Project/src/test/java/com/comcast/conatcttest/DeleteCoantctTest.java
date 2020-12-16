@@ -55,52 +55,7 @@ public class DeleteCoantctTest {
 			 driver = new ChromeDriver(); 
 		 }
 		
-		driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
-		driver.get(URL);
-		
-		driver.findElement(By.name("user_name")).sendKeys(USERNAME);
-		driver.findElement(By.name("user_password")).sendKeys(PASSWORD);
-		driver.findElement(By.id("submitButton")).click();
-		
-		/* step 2 : Navigtae to Contacts */
-		driver.findElement(By.linkText("Contacts")).click();
-
-		/* step 3 : navigate to create Contact Page */
-		driver.findElement(By.xpath("//img[@title='Create Contact...']")).click();
-
-		/* step 4 : Create new Contact With Organization */
-		driver.findElement(By.name("lastname")).sendKeys(contactLastNAme);
-		driver.findElement(By.xpath("//input[@title='Save [Alt+S]']")).click();
-
-		/* step 5 : navigate to Coabtct Module */
-		driver.findElement(By.linkText("Contacts")).click();
-
-		/* capature all the conatct List */
-		List<WebElement> lst = driver.findElements(By.xpath("//table[@class='lvt small']/tbody/tr[*]/td[4]/*"));
-		for (WebElement wb : lst) {
-			if (wb.getText().equals(contactLastNAme)) {
-				System.out.println(contactLastNAme + "==> is created & avaibale ==PASS");
-				break;
-			}
-		}
-
-		driver.findElement(By.xpath("//a[text()='" + contactLastNAme + "']/../../td[10]/a[text()='del']")).click();
-		wLib.accpetAllert(driver);
-
-		/* capature all the conatct List */
-		List<WebElement> lst1 = driver.findElements(By.xpath("//table[@class='lvt small']/tbody/tr[*]/td[4]/*"));
-		for (WebElement wb : lst1) {
-			if (wb.getText().equals(contactLastNAme)) {
-				System.out.println(contactLastNAme + "==> is still availbale ==Fail");
-				break;
-			}
-		}
-
-		
-		 /* step 8 : logout */
-		   WebElement wb = driver.findElement(By.xpath("//img[@src='themes/softed/images/user.PNG']"));
-		   wLib.moveMouseToElemnet(driver, wb);
-		  driver.findElement(By.linkText("Sign Out")).click(); driver.quit();
+	
 		 
 	}
 

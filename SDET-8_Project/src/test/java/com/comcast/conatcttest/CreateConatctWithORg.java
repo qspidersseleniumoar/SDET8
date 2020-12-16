@@ -22,6 +22,13 @@ import com.comcast.commonutils.ExcelUtility;
 import com.comcast.commonutils.FileUtility;
 import com.comcast.commonutils.JavaUtils;
 import com.comcast.commonutils.WebDriverUTils;
+import com.comcast.objectrepositorylib.Contacts;
+import com.comcast.objectrepositorylib.CreateNewConatct;
+import com.comcast.objectrepositorylib.CreateNewOrganization;
+import com.comcast.objectrepositorylib.Home;
+import com.comcast.objectrepositorylib.Login;
+import com.comcast.objectrepositorylib.OrganizationInfo;
+import com.comcast.objectrepositorylib.Organizations;
 
 public class CreateConatctWithORg {
 	
@@ -45,7 +52,7 @@ public class CreateConatctWithORg {
 		String contactLastNAme  = elib.getExcelData("Contact", "tc_01", "LastName")+JavaUtils.getRanDomData();
 		
 
-		/*step 1 : login to app*/
+		
 		WebDriver driver ;
 		 if(BROWSER.equals("chrome")) {
 		    driver = new ChromeDriver();
@@ -60,52 +67,40 @@ public class CreateConatctWithORg {
 		driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
 		driver.get(URL);
 		
-		driver.findElement(By.name("user_name")).sendKeys(USERNAME);
-		driver.findElement(By.name("user_password")).sendKeys(PASSWORD);
-		driver.findElement(By.id("submitButton")).click();
+		/*step 1 : login to app*/
+		Login lp = new Login(driver);
+		lp.loginToApp(USERNAME, PASSWORD);
+		
+		/*step 2 : navigate to  Organization page */
+		Home hp = new Home(driver);
+		hp.getOrgLnk().click();
+		
+		/*step 3 : navigate to create Organization Page*/
+		Organizations orgPage = new Organizations(driver);
+		orgPage.getCreateOrgImg().click();
+		
+		/*step 4 : create a Organization*/
+		CreateNewOrganization cno = new CreateNewOrganization(driver);
+		cno.creatOrganization(orgNAme, orgIndustry, orgType, orgRating);
+		
+		/*verify */
+		OrganizationInfo orginfo = new OrganizationInfo(driver);
+		String actMsg = orginfo.getSuccessFullMsg().getText();
+		Assert.assertTrue(actMsg.contains(orgNAme));
+		
+		/*step 5 : navigate to Contact Page*/
+		wLib.waitForElemnetToBeClickable(driver , hp.getContactLnk());
+		hp.getContactLnk().click();
+		
+		/*step 6 : navigate to create Contact Page*/
+		Contacts cp = new Contacts(driver);
+		cp.getCreateOrgImg().click();
+		
+		/*step 7 create Conatct with Org Name*/
+		CreateNewConatct cnc = new CreateNewConatct(driver);
+		cnc.createContact(contactLastNAme, orgNAme);
 		
 		
-		/*step 2 : Navigtae to Organization*/
-		driver.findElement(By.linkText("Organizations")).click();
-		
-		/*step 3 : navigate to create Org Page*/
-		driver.findElement(By.xpath("//img[@title='Create Organization...']")).click();
-		
-		/*step 4 : Create new Organization*/
-		driver.findElement(By.name("accountname")).sendKeys(orgNAme);
-		wLib.select(driver.findElement(By.name("industry")), orgIndustry);
-		wLib.select(driver.findElement(By.name("accounttype")), orgType);
-		wLib.select(driver.findElement(By.name("rating")), orgRating);
-		driver.findElement(By.xpath("//input[@title='Save [Alt+S]']")).click();
-		
-	   /*verify*/
-		String actOrgNAmeSuccessFullMsg = driver.findElement(By.xpath("//span[@class='dvHeaderText']")).getText();
-         Assert.assertTrue(actOrgNAmeSuccessFullMsg.contains(orgNAme));
-         
-         /*step 5 : Navigtae to Contacts*/
-         driver.findElement(By.linkText("Contacts")).click();
-         
- 		/*step 6 : navigate to create Contact Page*/
- 		driver.findElement(By.xpath("//img[@title='Create Contact...']")).click();
- 		
-		/*step 7 : Create new Contact With Organization*/
-			driver.findElement(By.name("lastname")).sendKeys(contactLastNAme);
-			driver.findElement(By.xpath("//input[@name='account_name']/following-sibling::img")).click();
-			
-			//swicth to child Wondow 
-			wLib.switchToWindow(driver, "Accounts&action");
-			driver.findElement(By.name("search_text")).sendKeys(orgNAme);
-			driver.findElement(By.name("search")).click();
-			driver.findElement(By.xpath("//a[text()='"+orgNAme+"']")).click();
-			//swicth to Parent Wondow
-			wLib.switchToWindow(driver, "Contacts");  
-			driver.findElement(By.xpath("//input[@title='Save [Alt+S]']")).click();
-		
-		 /*step 8 : logout*/ 
-			WebElement wb = driver.findElement(By.xpath("//img[@src='themes/softed/images/user.PNG']"));
-			wLib.moveMouseToElemnet(driver, wb);
-			driver.findElement(By.linkText("Sign Out")).click();
-			driver.quit();
 	}
 
 }
