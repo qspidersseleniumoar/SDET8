@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.testng.Assert;
 
 import com.comcast.commonutils.WebDriverUTils;
 
@@ -37,8 +38,6 @@ public class CreateNewOrganization extends WebDriverUTils{
 	@FindBy(name = "rating")
 	private WebElement ratingLst;
 	
-	
-
 	public WebElement getOrgNameEdt() {
 		return orgNameEdt;
 	}
@@ -58,7 +57,9 @@ public class CreateNewOrganization extends WebDriverUTils{
 	 */
 	public void creatOrganization(String orgName) {
 		orgNameEdt.sendKeys(orgName);
+		waitForElemnetToBeClickable(driver, saveBtn);
 		saveBtn.click();
+		
 	}
 	/**
 	 * used create orgnization with below parameter
@@ -72,6 +73,13 @@ public class CreateNewOrganization extends WebDriverUTils{
 		select(industriesLst, indsutry);
 		select(typeLst, type);
 		select(ratingLst, rating);
+		saveBtn.click();
+	}
+	
+	public void creatOrganization(String orgName , String indsutry) {
+		orgNameEdt.sendKeys(orgName);
+		select(industriesLst, indsutry);
+
 		saveBtn.click();
 	}
 	

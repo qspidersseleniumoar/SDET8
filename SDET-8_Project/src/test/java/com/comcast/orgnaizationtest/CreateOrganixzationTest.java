@@ -1,4 +1,4 @@
-package com.comcast.conatcttest;
+package com.comcast.orgnaizationtest;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -32,19 +32,13 @@ import com.comcast.objectrepositorylib.Login;
 import com.comcast.objectrepositorylib.OrganizationInfo;
 import com.comcast.objectrepositorylib.Organizations;
 @Listeners(com.comcast.commonutils.ListenerImplemenation.class)
-public class CreateConatctWithORg extends BaseClass{
-	
-	@Test(groups = "RegressionTest")
-	public void createConatctWithORg() throws Throwable {
+public class CreateOrganixzationTest extends BaseClass{
+	@Test(groups = "SmokeTest")
+	public void createOrg() throws Throwable {
 
-		
 		/*Test  Data*/
-		String orgNAme = elib.getExcelData("Contact", "tc_01", "OrgName")+JavaUtils.getRanDomData() ;
-		String orgIndustry = elib.getExcelData("Contact", "tc_01", "Industry");
-		String orgType = elib.getExcelData("Contact", "tc_01", "Type");
-		String orgRating = elib.getExcelData("Contact", "tc_01", "Rating");
-		String contactLastNAme  = elib.getExcelData("Contact", "tc_01", "LastName")+JavaUtils.getRanDomData();
-		
+		String orgNAme = elib.getExcelData("Org", "tc_01", "OrgName")+JavaUtils.getRanDomData() ;
+	
 		/*step 2 : navigate to  Organization page */
 		Home hp = new Home(driver);
 		hp.getOrgLnk().click();
@@ -55,27 +49,17 @@ public class CreateConatctWithORg extends BaseClass{
 		
 		/*step 4 : create a Organization*/
 		CreateNewOrganization cno = new CreateNewOrganization(driver);
-		cno.creatOrganization(orgNAme, orgIndustry, orgType, orgRating);
+		cno.creatOrganization(orgNAme);
 		
 		/*verify */
 		OrganizationInfo orginfo = new OrganizationInfo(driver);
 		String actMsg = orginfo.getSuccessFullMsg().getText();
 		Assert.assertTrue(actMsg.contains(orgNAme));
 		
-		/*step 5 : navigate to Contact Page*/
-		wLib.waitForElemnetToBeClickable(driver , hp.getContactLnk());
-		hp.getContactLnk().click();
-		
-		/*step 6 : navigate to create Contact Page*/
-		Contacts cp = new Contacts(driver);
-		cp.getCreateOrgImg().click();
-		
-		/*step 7 create Conatct with Org Name*/
-		CreateNewConatct cnc = new CreateNewConatct(driver);
-		cnc.createContact(contactLastNAme, orgNAme);
-		
-		
 	}
+	
+	
+	
 
 }
 
