@@ -92,4 +92,10 @@ public class DataBaseUtilities {
 		
 	}
 	
+	public ResultSet connectToDb(String url , String username , String PAssword) {
+		//steps  : 1, 2, 3, 4, 5
+		return null;
+		
+	}
+	
 }
